@@ -1,0 +1,28 @@
+---
+title: "Package Presentation"
+author: "Alex Shen, Andrew Niu"
+date: "3/2/2020"
+output: 
+  prettydoc::html_pretty:
+    theme: cayman
+    toc: yes 
+    #collapsed: yes
+    #float: yes
+  html_document:
+    toc: yes
+    toc_float: yes
+    toc_collapsed: yes
+    theme: cerulean
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Package Overview
+
+# Examples of Usage
+
+# Similar Packages
+
+# Reflection
