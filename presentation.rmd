@@ -1,12 +1,11 @@
 ---
 title: "Package Presentation"
 author: "Alex Shen, Andrew Niu"
-date: "3/2/2020"
 output: 
   prettydoc::html_pretty:
     theme: cayman
     toc: yes 
-    #collapsed: yes
+    toc_collapsed: yes
     #float: yes
   html_document:
     toc: yes
@@ -36,6 +35,8 @@ It extends the functionality of the `ggplot2` package, being capable of directly
 
 Current version: 4.9.2 (last updated 2/12/20)
 
+The earliest available version in [the CRAN package archive](https://cran.r-project.org/src/contrib/Archive/plotly/) is version 2.0.2 (released 11/17/15)
+
 ### Dependencies
 
 R (≥ 3.2.0), ggplot2 (≥ 3.0.0)
@@ -43,8 +44,102 @@ R (≥ 3.2.0), ggplot2 (≥ 3.0.0)
 
 ### Usage
 
+<list of functions that aren't covered by our examples>
+
 
 # Examples of Usage
+
+## Scatterplot
+```{r, include=FALSE}
+library(tidyverse)
+library(plotly)
+library(ggrepel)
+```
+
+```{r, message=FALSE}
+econ_data <- read_csv('EconomistData.csv')
+```
+
+Making graph from scratch
+
+```{r,echo=FALSE, message=FALSE, warning=FALSE}
+fig = plot_ly(data=econ_data, x=~CPI, y=~HDI, type="scatter", mode="markers",
+              color = ~Region, symbols = 'o', colors ="Set1")
+fig = fig %>% layout(title = 'Corruption and human development', 
+                     xaxis = list(title="Corruption Perceptions Index, 2011 (10=least corrupt"),
+                     yaxis = list(title="Human Development Index, 2011 (1=best)")) %>%
+  add_trace(x=~CPI,
+            y=~HDI,
+            text=~Country)
+
+fig
+```
+
+Converting from ggplot2 
+```{r,echo=FALSE, message=FALSE, warning=FALSE}
+curr_labs = c("EU W. Europe","Asia Pacific","MENA","SSA","East EU Cemt Asia")
+new_labs = c("OECD","Asia & Oceania","Middle East & north Africa","Sub-Saharan Africa",
+             "Central & Eastern Europe")
+change_labs = function(df, curr, new){
+  df %>% mutate_if(is.character, str_replace_all, pattern = curr, replacement = new)
+}
+for(index in c(1:length(curr_labs))){
+  econ_data = change_labs(econ_data, curr_labs[index], new_labs[index])
+}
+countries = c("Russia", "Venezuela", "Iraq", "Myanmar", "Sudan", "Afghanistan", "Argentina",
+              "Congo", "Greece", "Brazil", "India", "Italy", "China", "South Africa", "Rwanda",
+              "Cape Verde", "Bhutan", "Botswana", "Spain", "France", "US", "Germany", "Britain",
+              "Japan", "Barbados", "Norway", "Singapore", "New Zealand")
+plot = ggplot(data=econ_data,
+              aes(x=CPI, y=HDI)) +
+  theme_bw()
+plot = plot +
+  geom_point(aes(color=str_wrap(Region,15),
+                 text=("hi" + "test")), #RUN HERE
+             size = 3, 
+             shape = 1, 
+             stroke = 0.5)
+plot = plot +
+  geom_text_repel(data=subset(econ_data, Country %in% countries), 
+                  aes(label=Country),
+                  color="black", point.padding = T)
+plot = plot +
+  scale_y_continuous(breaks=seq(0.2, 1, 0.1),
+                     limits=c(.2,1.0)) +
+  scale_x_continuous(breaks=seq(1,10),
+                     limits=c(1,10)) +
+  theme(panel.grid.minor.y = element_blank(),
+        panel.grid.major.x = element_blank(),
+        panel.grid.minor.x = element_blank(),
+        panel.border = element_blank())
+plot = plot +
+  scale_color_manual(values = c("#3eb7e0", "#91daf3", "#3ea69e",
+                                "#f58171", "#1b5e73", "#9d5743"))
+plot = plot +
+  labs(x = "Corruption Perceptions Index, 2011 (10=least corrupt)",
+       y = "Human Development Index, 2011 (1=best)",
+       title = "Corruption and human development") +
+  theme(plot.title = element_text(face="bold"))
+plot = plot + 
+  theme(legend.position = "top",
+        legend.title = element_blank()) +
+  guides(color = guide_legend(nrow = 1))
+mod <- lm(HDI ~ log(CPI), data = econ_data)
+r2 <- broom::glance(mod) %>% pull(r.squared) %>% round(., 2)
+plot = plot +
+  geom_smooth(method = 'lm', formula = y ~ log(x), se=F, color = "#ed1b22") +
+  annotate(geom = 'text',
+           x = 9, y = .5,
+           label=glue::glue("R^2 == {r}",r=r2),
+           size=5,
+           parse=T, color = "#ed1b22")
+```
+```{r, message=FALSE, warning=FALSE}
+plot
+
+ggplotly(plot, tooltip="text")
+```
+
 
 # Similar Packages
 
