@@ -18,11 +18,36 @@ output:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
-
 # Package Overview
+
+## Summary
+
+As we all know, data visualization is critical in understanding and communicating about data. While static graphs are effective in conveying the thought processes and conclusions of the data scientist using them, they could potentially miss the mark in addressing questions that an end user needs answered. However, what if we could make graphs that were interactive, allowing a user to personally dive deeper into the data? This is the goal of the R package `plotly`. 
+
+`plotly` is a data visualization tool that focuses on creating interactive, accessible, and visually appealing data models. 
+
+It extends the functionality of the `ggplot2` package, being capable of directly converting `ggplot2` objects into `plotly` objects
+
+## Background
+
+“Plotly” is actually also the name of a company that develops versions of their tools in languages other than R, including Python, JavaScript, and even MATLAB. This package is an implementation of functionality that exists in other languages as well. 
+
+### Version History
+
+Current version: 4.9.2 (last updated 2/12/20)
+
+### Dependencies
+
+R (≥ 3.2.0), ggplot2 (≥ 3.0.0)
+
+
+### Usage
+
 
 # Examples of Usage
 
 # Similar Packages
 
+
 # Reflection
+
